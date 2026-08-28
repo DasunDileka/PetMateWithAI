@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sampled from the PetMate logo so the native launch window and the
+         Flutter UI share one background and there is no colour flash. -->
+    <color name="petmate_navy">#FF234369</color>
+    <color name="petmate_paper">#FFEAF3FB</color>
+</resources>

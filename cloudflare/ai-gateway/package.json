@@ -1,0 +1,14 @@
+{
+  "name": "petmate-ai-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker that brokers Gemini/OpenRouter calls for the PetMate mobile app so API keys never ship in the APK.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

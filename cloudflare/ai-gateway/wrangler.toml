@@ -1,0 +1,18 @@
+name = "petmate-ai-gateway"
+main = "src/index.js"
+compatibility_date = "2025-08-01"
+
+# The Firebase project whose ID tokens this Worker will accept.
+[vars]
+FIREBASE_PROJECT_ID = "petmate-53b55"
+
+# Per-user AI rate limiting. Create with:
+#   wrangler kv namespace create RATE_LIMIT
+# then paste the returned id below and uncomment.
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "<paste-kv-namespace-id>"
+
+# Secrets are NEVER stored in this file. Set them with:
+#   wrangler secret put GEMINI_API_KEY
+#   wrangler secret put OPENROUTER_API_KEY

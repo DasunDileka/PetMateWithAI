@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PetMate launch window: brand background with the mark centred, so the
+     native launch screen matches the Flutter splash that follows it. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/petmate_paper" />
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/petmate_splash" />
+    </item>
+</layer-list>

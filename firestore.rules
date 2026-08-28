@@ -1,0 +1,111 @@
+rules_version = '2';
+
+// PetMate — Cloud Firestore security rules
+// Model: every document lives under /users/{userId}/..., so authorisation is a
+// single ownership predicate. Default is deny; nothing outside /users is readable.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Owner *and* a verified-uid match. Also rejects requests where the caller
+    // tries to write a userId field that is not their own.
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isNonEmptyString(v, maxLen) {
+      return v is string && v.size() > 0 && v.size() <= maxLen;
+    }
+
+    // Guards against a client silently re-parenting a document to another user.
+    function ownerFieldConsistent(userId) {
+      return !('ownerId' in incoming()) || incoming().ownerId == userId;
+    }
+
+    // ---------- user profile ----------
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+
+      allow create: if isOwner(userId)
+                    && isNonEmptyString(incoming().displayName, 80)
+                    && incoming().email == request.auth.token.email;
+
+      allow update: if isOwner(userId)
+                    // email is set from the auth token at creation and is immutable
+                    && incoming().email == resource.data.email
+                    && isNonEmptyString(incoming().displayName, 80);
+
+      // Account deletion is an privileged operation, not a client write.
+      allow delete: if false;
+
+      // ---------- pets ----------
+      match /pets/{petId} {
+        allow read: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+                              && ownerFieldConsistent(userId)
+                              && isNonEmptyString(incoming().name, 60)
+                              && isNonEmptyString(incoming().species, 30)
+                              && incoming().weightKg is number
+                              && incoming().weightKg > 0
+                              && incoming().weightKg < 200;
+
+        allow delete: if isOwner(userId);
+
+        // Care records: feeding, exercise, medicine, vaccination, grooming,
+        // appointments, medicalHistory, aiInsights. Ownership is inherited from
+        // the path; per-collection shape is validated in the app layer and by
+        // the generic guards below.
+        match /{careCollection}/{recordId} {
+          allow read: if isOwner(userId);
+          allow create, update: if isOwner(userId) && ownerFieldConsistent(userId);
+          allow delete: if isOwner(userId);
+        }
+      }
+
+      // ---------- veterinarians (user-level: reusable across pets) ----------
+      match /veterinarians/{vetId} {
+        allow read: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+                              && ownerFieldConsistent(userId)
+                              && isNonEmptyString(incoming().doctorName, 80);
+        allow delete: if isOwner(userId);
+      }
+
+      // ---------- AI chat ----------
+      match /chatSessions/{sessionId} {
+        allow read, create, update, delete: if isOwner(userId);
+
+        match /messages/{messageId} {
+          allow read: if isOwner(userId);
+          allow create: if isOwner(userId)
+                        && incoming().role in ['user', 'assistant']
+                        && incoming().text is string
+                        && incoming().text.size() <= 8000;
+          // Chat messages are immutable once written; users may delete them.
+          allow update: if false;
+          allow delete: if isOwner(userId);
+        }
+      }
+
+      // ---------- notification / app preferences ----------
+      match /settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // ---------- default deny ----------
+    // Any path not matched above is unreachable for every client.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

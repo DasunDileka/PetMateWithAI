@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Notification small icon.
+
+    Android renders the small icon as a monochrome silhouette: every non-
+    transparent pixel is flattened to a single tint colour. Passing the
+    full-colour launcher icon therefore produces a featureless filled square.
+    This is a dedicated white-on-transparent paw mark so the notification is
+    recognisably PetMate at 24dp.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFFFF">
+
+    <!-- toes -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M6.2,10.4m-2.3,0a2.3,2.6 0,1 1,4.6 0a2.3,2.6 0,1 1,-4.6 0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M17.8,10.4m-2.3,0a2.3,2.6 0,1 1,4.6 0a2.3,2.6 0,1 1,-4.6 0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M9.7,5.6m-2.2,0a2.2,2.7 0,1 1,4.4 0a2.2,2.7 0,1 1,-4.4 0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M14.3,5.6m-2.2,0a2.2,2.7 0,1 1,4.4 0a2.2,2.7 0,1 1,-4.4 0" />
+
+    <!-- main pad -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,12.2c-2.9,0 -5.3,2.2 -5.3,4.9c0,1.9 1.4,3.1 3.2,3.1c0.8,0 1.5,-0.3 2.1,-0.3c0.6,0 1.3,0.3 2.1,0.3c1.8,0 3.2,-1.2 3.2,-3.1C17.3,14.4 14.9,12.2 12,12.2z" />
+</vector>

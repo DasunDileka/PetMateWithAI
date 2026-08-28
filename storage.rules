@@ -1,0 +1,34 @@
+rules_version = '2';
+
+// PetMate — Cloud Storage security rules
+// Only pet/profile images, only under the caller's own prefix, only images,
+// and capped at 5 MB so a compromised client cannot fill the bucket.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function isImageUnder(maxBytes) {
+      return request.resource.contentType.matches('image/.*')
+             && request.resource.size < maxBytes;
+    }
+
+    match /users/{userId}/pets/{petId}/{fileName} {
+      allow read:   if isOwner(userId);
+      allow write:  if isOwner(userId) && isImageUnder(5 * 1024 * 1024);
+      allow delete: if isOwner(userId);
+    }
+
+    match /users/{userId}/profile/{fileName} {
+      allow read:   if isOwner(userId);
+      allow write:  if isOwner(userId) && isImageUnder(5 * 1024 * 1024);
+      allow delete: if isOwner(userId);
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

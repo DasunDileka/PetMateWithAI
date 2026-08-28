@@ -1,0 +1,7 @@
+{
+  "GEMINI_API_KEY": "your-gemini-key",
+  "OPENROUTER_API_KEY": "your-openrouter-key",
+  "GEMINI_MODEL": "gemini-3.6-flash",
+  "OPENROUTER_MODEL": "openai/gpt-oss-20b:free",
+  "AI_GATEWAY_URL": ""
+}
