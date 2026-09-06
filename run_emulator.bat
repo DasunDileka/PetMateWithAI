@@ -7,9 +7,14 @@ REM         run_emulator.bat host       -> host GPU (faster, needs good drivers)
 
 set "SDK=%LOCALAPPDATA%\Android\Sdk"
 set "EMU=%SDK%\emulator\emulator.exe"
-set "AVD=PetMate_API36"
+set "AVD=Pixel_10_Pro_XL"
 set "GPU=%~1"
 if "%GPU%"=="" set "GPU=swiftshader_indirect"
+
+REM Screen-recorder Vulkan capture layers (OBS / Bandicam) inject into qemu and
+REM crash the emulator. These are each layer's documented opt-out switch.
+set "DISABLE_VULKAN_OBS_CAPTURE=1"
+set "VK_LAYER_bandicam_helper_DEBUG_1=1"
 
 if not exist "%EMU%" (
   echo [X] emulator.exe not found at "%EMU%"
